@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+build/
+dist/
+
+# Local configuration
+.env
+.env.*
+!.env.example
+.DS_Store
+
+# Generated data and experiment outputs
+/data/
+/datasets/
+/checkpoints/
+/runs/
+/outputs/
+/wandb/
