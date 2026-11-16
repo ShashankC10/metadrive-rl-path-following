@@ -1,0 +1,18 @@
+# Required interpreter: CPython 3.11.x (tested target: 3.11.9).
+# MetaDrive 0.4.3 declares Python >=3.6,<3.12, so Python 3.12+ is unsupported.
+
+# Simulator and RL stack
+metadrive-simulator==0.4.3
+stable-baselines3==2.4.1
+gymnasium==0.29.1
+torch==2.5.1
+numpy==1.26.4
+
+# Configuration, experiment logging, analysis, and plots
+PyYAML==6.0.2
+tensorboard==2.18.0
+pandas==2.2.3
+matplotlib==3.9.2
+
+# Tests used by the implementation plan
+pytest==8.3.4

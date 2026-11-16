@@ -15,6 +15,21 @@ A practice-based course project that trains a reinforcement learning agent to fo
 - Compare with a pure-pursuit steering controller and proportional speed controller.
 - Begin with one vehicle and no traffic or camera-based perception.
 
+## Environment setup
+
+The supported development interpreter is CPython 3.11.x; the pinned target is
+Python 3.11.9 because MetaDrive 0.4.3 does not support Python 3.12 or newer.
+
+```bash
+conda create --name deep-rl python=3.11.9 pip -y
+conda activate deep-rl
+python -m pip install -r requirements.txt
+python -m metadrive.pull_asset
+```
+
+The dependency set has been resolved and smoke-tested on macOS ARM64. PPO uses
+an MLP, so CPU training is the default; GPU/MPS is not required.
+
 ## Evaluation
 
 Measure route completion rate, off-road rate, lateral tracking error, and completion time on successful runs. Use separate training, validation, and test layouts; freeze the policy and observation normalization during evaluation.
@@ -25,7 +40,9 @@ This project studies transfer between scenario sources within simulation. It doe
 
 ## Status
 
-Repository initialized. Implementation, dependency setup, and experiments are pending. The approach above is the current project plan, not a report of completed results.
+Repository initialized. The `deep-rl` Conda environment and simulator assets
+have been validated, while implementation and experiments are pending. The
+approach above is the current project plan, not a report of completed results.
 
 ## Attribution
 
