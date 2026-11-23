@@ -38,11 +38,43 @@ Evaluate first on held-out generated roads, then explore reconstructed nuScenes 
 
 This project studies transfer between scenario sources within simulation. It does not claim real-world deployment or use behavior cloning from human control labels.
 
+## Usage
+
+```bash
+pip install -e .                                   # or: export PYTHONPATH=$PWD/src
+python scripts/make_splits.py                      # immutable layout manifests -> splits/ (committed)
+python scripts/tune_baseline.py                    # pure-pursuit tuning on train layouts -> configs/baseline_params.json
+scripts/run_all_training.sh                        # 3 PPO seeds + 3 no-lookahead ablation seeds (~10 min each on an M3 Pro)
+scripts/eval_all.sh                                # val + test evaluation -> outputs/eval/*.csv
+python scripts/make_report.py                      # docs/results.md + docs/figures/
+python scripts/plot_trajectories.py --model checkpoints/ppo_s0/best_model.zip --layouts 2000 2001 2002
+python -m pytest                                   # geometry + simulator lifecycle tests
+python -m path_following.demo --controller ppo --model checkpoints/ppo_s1/best_model.zip --layout 2000   # rendered playback (needs a display)
+```
+
+Layout: `src/path_following/` (route geometry, env, baseline, train, evaluate, metrics, demo), `configs/`,
+`splits/`, `scripts/`, `tests/`, `docs/`. Checkpoints (`checkpoints/`), logs (`runs/`) and raw results
+(`outputs/`) are git-ignored. Observations use fixed scaling constants, so there are no learned
+normalization statistics to save or freeze. Optional cluster use: `docs/hprc.md`.
+
+**Rendering on macOS:** stock MetaDrive shows a blank white road on Apple GPUs (the default OpenGL 2.1 context can't compile
+its `#version 150` terrain shader, and the core-profile context rejects legacy `texture2D()`). `macos_render.py`
+applies a local fix (core profile, `texture2D`->`texture`, lower MSAA) without editing MetaDrive; `demo.py` uses it
+automatically. Use it in your own code with `from path_following import macos_render; macos_render.apply()` before creating a rendered env.
+
 ## Status
 
-Repository initialized. The `deep-rl` Conda environment and simulator assets
-have been validated, while implementation and experiments are pending. The
-approach above is the current project plan, not a report of completed results.
+The core experiment is implemented and run: PPO and pure pursuit evaluated on 50 held-out generated roads
+(`docs/results.md`). A 10-scene nuScenes-mini transfer pilot (7 valid scenes) is in `docs/nuscenes_pilot.md`;
+nuPlan has **not** been attempted.
+
+Test results (50 held-out layouts, one seed per layout): all three PPO seeds and the baseline complete 50/50
+roads. PPO is faster (about 9.7 vs 7.8 m/s; the baseline's target speed is 8 m/s while PPO is rewarded up to
+10 m/s) and tracks the lane centre more tightly than pure pursuit (mean |lateral| 0.035-0.060 m vs 0.083 m),
+but the task is easy and success saturates, so the main differences are speed and tracking error, not
+completion. PPO without lookahead points reached 98-100% success with even smaller lateral error here, so
+this setup does not show that lookahead is needed. Limitations: single lane-centre reference, no traffic,
+one baseline speed setting, three seeds.
 
 ## Attribution
 
