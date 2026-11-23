@@ -1,0 +1,5 @@
+# Curriculum stage: straights and curves only (no junctions).
+env:
+  map: "SCSC"
+ppo:
+  total_timesteps: 1000000

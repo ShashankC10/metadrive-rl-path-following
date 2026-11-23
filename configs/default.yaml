@@ -1,0 +1,6 @@
+# Environment and PPO settings. Anything omitted falls back to src/path_following/config.py.
+env:
+  map: 4
+ppo:
+  total_timesteps: 2000000
+  n_envs: 8

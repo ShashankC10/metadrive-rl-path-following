@@ -1,0 +1,6 @@
+# Ablation: only the nearest route point (3 m ahead) instead of 10 points up to 30 m.
+env:
+  map: 4
+  n_lookahead: 1
+ppo:
+  total_timesteps: 2000000
