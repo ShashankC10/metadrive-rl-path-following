@@ -16,10 +16,10 @@ from .config import load_config
 from .env import PathFollowingEnv, read_manifest
 
 
-def run_episodes(env: PathFollowingEnv, controller, layout_seeds, label: str = "") -> pd.DataFrame:
+def run_episodes(env: PathFollowingEnv, controller, layout_seeds, label: str = "", progress_every: int = 0) -> pd.DataFrame:
     """Run one deterministic episode per layout seed; `controller(env, obs, state) -> action`."""
     rows = []
-    for ls in layout_seeds:
+    for n, ls in enumerate(layout_seeds, 1):
         obs, _ = env.reset(options={"layout_seed": ls})
         done = False
         while not done:
@@ -27,6 +27,8 @@ def run_episodes(env: PathFollowingEnv, controller, layout_seeds, label: str = "
             obs, _, term, trunc, info = env.step(action)
             done = term or trunc
         rows.append({"controller": label, **info["episode_metrics"]})
+        if progress_every and n % progress_every == 0:
+            print(f"  [{label}] {n}/{len(layout_seeds)} episodes", flush=True)
     return pd.DataFrame(rows)
 
 

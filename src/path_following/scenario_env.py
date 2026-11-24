@@ -23,6 +23,16 @@ def load_scenarios(db: str) -> list[dict]:
     return [pickle.load(open(os.path.join(db, mapping[f], f), "rb")) for f in summary]
 
 
+def iter_scenarios(db: str):
+    """Yield scenarios one at a time (same order as ScenarioEnv indexes them); use for large databases."""
+    db = os.path.expanduser(db)
+    summary = pickle.load(open(f"{db}/dataset_summary.pkl", "rb"))
+    mapping = pickle.load(open(f"{db}/dataset_mapping.pkl", "rb"))
+    for f in summary:
+        with open(os.path.join(db, mapping[f], f), "rb") as fh:
+            yield pickle.load(fh)
+
+
 def ego_route_points(scn: dict, min_step: float = 0.5) -> np.ndarray:
     t = scn["tracks"][scn["metadata"]["sdc_id"]]["state"]
     xy = t["position"][:, :2][np.asarray(t["valid"], dtype=bool)]
@@ -77,7 +87,8 @@ class ScenarioPathFollowingEnv(PathFollowingEnv):
             use_render=self._render, data_directory=self.db, start_scenario_index=0,
             num_scenarios=self.n_scenarios, sequential_seed=False, agent_policy=EnvInputPolicy,
             no_traffic=True, no_light=True, decision_repeat=c["decision_repeat"], horizon=None,
-            crash_vehicle_done=True, crash_object_done=True, log_level=40))
+            crash_vehicle_done=True, crash_object_done=True, log_level=40,
+            store_map=False, store_data=False))   # default True caches every scenario in RAM (OOM on large databases)
 
     def _extract_route(self) -> Route:
         scn = self._md.engine.data_manager.current_scenario

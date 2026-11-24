@@ -23,4 +23,13 @@ dist/
 /runs/
 /outputs/
 /wandb/
-.idea
+.idea/
+.ipynb_checkpoints/
+
+# Converted scenario databases, archives and logs (large, regenerable)
+*.db
+*.pkl
+*.zip
+*.tgz
+*.log
+nohup.out

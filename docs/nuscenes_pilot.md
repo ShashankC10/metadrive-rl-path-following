@@ -9,7 +9,7 @@ these scenes. This is a pilot: transfer between simulated scenario sources, not 
 - Conversion (separate env, ScenarioNet + nuscenes-devkit):
   `python -m scenarionet.convert_nuscenes -d ~/data/nuscenes_db --split v1.0-mini --dataroot ~/data/nuscenes`
   (run from a directory that does not contain a folder named `scenarionet`; setuptools pinned `<81`).
-- Evaluation runs in the core `deep-rl` env: `python scripts/pilot_nuscenes.py --models checkpoints/ppo_s*/best_model.zip`.
+- Evaluation runs in the core `deep-rl` env: `python scripts/pilot_scenarionet.py --db ~/data/nuscenes_db --out outputs/nuscenes --models checkpoints/ppo_s*/best_model.zip`.
   Code: `src/path_following/scenario_env.py`.
 - Same task contract as the core experiment: same observation, action space, reward-independent metrics,
   termination rules, and no traffic or traffic lights (`no_traffic`, `no_light`).
